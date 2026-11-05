@@ -1,0 +1,25 @@
+title: Amazon Electronics Reviews Analysis
+period: Gen 2025 – Feb 2026
+metric: RMSE 1.12
+stack: Apache Spark, Scala, MongoDB, NLP, ALS
+summaryIt: >-
+  Pipeline distribuita su **Apache Spark** per analizzare **20 milioni di
+  recensioni** Amazon.
+
+
+  - Identificati i driver di insoddisfazione e gli hub strutturali del mercato
+  con tecniche NLP e PageRank.
+
+  - Sistema di raccomandazione validato con un **RMSE di 1,12**, anche su dati
+  sparsi.
+summaryEn: >-
+  Distributed **Apache Spark** pipeline analyzing **20 million Amazon reviews**.
+
+
+  - Identified the drivers of negative ratings and the structural hubs of the
+  market using NLP and PageRank.
+
+  - Recommender system validated at an **RMSE of 1.12**, even with sparse data.
+repo: https://github.com/vitomarcorubino/Amazon-Electronics-Reviews
+featured: true
+order: 1

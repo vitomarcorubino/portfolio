@@ -37,4 +37,20 @@ const education = defineCollection({
   }),
 });
 
-export const collections = { posts, experience, education };
+const projects = defineCollection({
+  loader: glob({ pattern: '**/*.{yaml,json}', base: './src/content/projects' }),
+  schema: z.object({
+    title: z.string(),
+    period: z.string(),
+    metric: z.string(),
+    stack: z.string(),
+    summaryIt: z.string().default(''),
+    summaryEn: z.string().default(''),
+    repo: z.string().optional(),
+    paper: z.string().optional(),
+    featured: z.boolean().default(false),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { posts, experience, education, projects };
