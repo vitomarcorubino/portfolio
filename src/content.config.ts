@@ -24,4 +24,17 @@ const experience = defineCollection({
   }),
 });
 
-export const collections = { posts, experience };
+const education = defineCollection({
+  loader: glob({ pattern: '**/*.{yaml,json}', base: './src/content/education' }),
+  schema: z.object({
+    degree: z.string(),
+    institution: z.string(),
+    location: z.string(),
+    startDate: z.string(),
+    endDate: z.string(),
+    grade: z.string(),
+    thesis: z.string().optional(),
+  }),
+});
+
+export const collections = { posts, experience, education };

@@ -11,6 +11,10 @@ const experience = (await getCollection('experience')).sort((a, b) =>
   (b.data.startDate ?? '').localeCompare(a.data.startDate ?? '')
 );
 
+const education = (await getCollection('education')).sort((a, b) =>
+  b.data.startDate.localeCompare(a.data.startDate)
+);
+
 // Converte "2026-07" in "lug 2026"
 function formatMonth(value: string) {
   if (!value) return '';
@@ -72,4 +76,30 @@ function formatMonth(value: string) {
       })}
     </ol>
   </section>
+
+  <section id="formazione" class="py-16">
+  <h2 class="mb-12 text-3xl font-bold">Formazione</h2>
+
+  <ol class="space-y-6">
+    {education.map((item) => (
+      <li class="rounded-lg border border-slate-800 p-6">
+        <p class="text-sm text-slate-500">
+          {formatMonth(item.data.startDate)} – {formatMonth(item.data.endDate)}
+        </p>
+        <h3 class="mt-1 text-xl font-semibold">{item.data.degree}</h3>
+        <p class="text-slate-400">
+          {item.data.institution} · {item.data.location}
+        </p>
+        <p class="mt-3 text-slate-300">
+          Voto: <span class="font-semibold text-white">{item.data.grade}</span>
+        </p>
+        {item.data.thesis && (
+          <p class="mt-2 text-slate-300">
+            <span class="text-slate-500">Tesi:</span> <em>{item.data.thesis}</em>
+          </p>
+        )}
+      </li>
+    ))}
+  </ol>
+</section>
 </Layout>

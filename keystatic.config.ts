@@ -37,5 +37,19 @@ export default config({
         descriptionEn: fields.text({ label: 'Descrizione (EN)', multiline: true }),
       },
     }),
+    education: collection({
+      label: 'Formazione',
+      slugField: 'degree',
+      path: 'src/content/education/*',
+      schema: {
+        degree: fields.slug({ name: { label: 'Titolo di studio' } }),
+        institution: fields.text({ label: 'Istituto' }),
+        location: fields.text({ label: 'Luogo' }),
+        startDate: fields.text({ label: 'Data inizio (AAAA-MM)' }),
+        endDate: fields.text({ label: 'Data fine (AAAA-MM)' }),
+        grade: fields.text({ label: 'Voto' }),
+        thesis: fields.text({ label: 'Titolo della tesi' }),
+      },
+    }),
   },
 });
