@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<Layout title="Post" description="Articoli e note di Vito Marco Rubino">
+  <section class="py-12">
+    <h1 class="mb-10 text-3xl font-bold">Post</h1>
+    <ul class="space-y-8">
+      {posts.map((post) => (
+        <li>
+          <a href={`/posts/${post.id}`} class="text-xl font-semibold hover:underline">
+            {post.data.title}
+          </a>
+          <p class="mt-1 text-slate-400">{post.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
