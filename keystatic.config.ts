@@ -65,6 +65,8 @@ export default config({
         summaryEn: fields.text({ label: 'Descrizione (EN)', multiline: true }),
         repo: fields.text({ label: 'Link repository (opzionale)' }),
         paper: fields.text({ label: 'Link paper o presentazione (opzionale)' }),
+        image: fields.text({ label: 'Immagine (es. /images/projects/road-damage.jpg)' }),
+        live: fields.text({ label: 'Link demo o sito (opzionale)' }),
         featured: fields.checkbox({ label: 'In evidenza in home', defaultValue: false }),
         order: fields.integer({ label: 'Ordine in home (1 = primo)', defaultValue: 0 }),
       },

@@ -8,6 +8,16 @@ interface Props {
 }
 
 const { title, lang = 'it', description = '' } = Astro.props;
+
+const links = [
+  { href: '/#chi-sono', label: 'Chi sono' },
+  { href: '/#esperienza', label: 'Esperienza' },
+  { href: '/#formazione', label: 'Formazione' },
+  { href: '/#progetti', label: 'Progetti' },
+  { href: '/posts', label: 'Post' },
+  { href: '/#contatti', label: 'Contatti' },
+
+];
 ---
 
 <html lang={lang}>
@@ -16,18 +26,43 @@ const { title, lang = 'it', description = '' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
   </head>
-  <body class="min-h-screen bg-slate-950 text-slate-200 flex flex-col">
+  <body class="flex min-h-screen flex-col bg-slate-950 text-slate-200">
     <header class="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur">
-      <nav class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 p-4">
+      <nav class="mx-auto flex max-w-5xl items-center justify-between p-4" aria-label="Navigazione principale">
         <a href="/" class="font-semibold">Vito Marco Rubino</a>
-          <ul class="flex flex-wrap gap-6 text-sm">
-            <li><a href="/#esperienza" class="hover:underline">Esperienza</a></li>
-            <li><a href="/#progetti" class="hover:underline">Progetti</a></li>
-            <li><a href="/posts" class="hover:underline">Post</a></li>
-            <li><a href="/#contatti" class="hover:underline">Contatti</a></li>
-          </ul>
+
+        <!-- Menu desktop -->
+        <ul class="hidden gap-6 text-sm md:flex">
+          {links.map((link) => (
+            <li><a href={link.href} class="hover:underline">{link.label}</a></li>
+          ))}
+        </ul>
+
+        <!-- Pulsante hamburger, solo mobile -->
+        <button
+          type="button"
+          id="menu-toggle"
+          class="p-2 md:hidden"
+          aria-expanded="false"
+          aria-controls="menu-mobile"
+          aria-label="Apri menu"
+        >
+          <span class="block h-0.5 w-6 bg-slate-200"></span>
+          <span class="mt-1.5 block h-0.5 w-6 bg-slate-200"></span>
+          <span class="mt-1.5 block h-0.5 w-6 bg-slate-200"></span>
+        </button>
       </nav>
+
+      <!-- Pannello mobile, nascosto di default -->
+      <ul id="menu-mobile" class="hidden flex-col gap-4 border-t border-slate-800 p-4 text-sm md:hidden">
+        {links.map((link) => (
+          <li><a href={link.href} class="block py-1 hover:underline">{link.label}</a></li>
+        ))}
+      </ul>
     </header>
 
     <main class="mx-auto w-full max-w-5xl flex-1 p-4">
@@ -37,5 +72,41 @@ const { title, lang = 'it', description = '' } = Astro.props;
     <footer class="border-t border-slate-800 p-4 text-center text-sm text-slate-500">
       © 2026 Vito Marco Rubino
     </footer>
+
+    <script>
+      const toggle = document.getElementById('menu-toggle');
+      const menu = document.getElementById('menu-mobile');
+
+      function closeMenu() {
+        if (!toggle || !menu) return;
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Apri menu');
+        menu.classList.add('hidden');
+        menu.classList.remove('flex');
+      }
+
+      function openMenu() {
+        if (!toggle || !menu) return;
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Chiudi menu');
+        menu.classList.remove('hidden');
+        menu.classList.add('flex');
+      }
+
+      toggle?.addEventListener('click', () => {
+        const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+        isOpen ? closeMenu() : openMenu();
+      });
+
+      // Chiude il menu quando si sceglie una voce
+      menu?.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Chiude il menu con il tasto Esc
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeMenu();
+      });
+    </script>
   </body>
 </html>

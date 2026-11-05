@@ -1,136 +1,377 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
-import { marked } from 'marked';
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import { marked } from "marked";
 
-const CV_URL = '/cv/cv-vito-marco-rubino-en.pdf';
-const LINKEDIN_URL = 'https://www.linkedin.com/in/vitomarcorubino';
-const EMAIL = 'rubino.vitomarcorubino@gmail.com';
+const CV_URL = "/cv/cv-vito-marco-rubino-en.pdf";
+const LINKEDIN_URL = "https://www.linkedin.com/in/vitomarcorubino";
+const EMAIL = "rubino.vitomarcorubino@gmail.com";
 
-const experience = (await getCollection('experience')).sort((a, b) =>
-  (b.data.startDate ?? '').localeCompare(a.data.startDate ?? '')
+const experience = (await getCollection("experience")).sort((a, b) =>
+  (b.data.startDate ?? "").localeCompare(a.data.startDate ?? ""),
 );
 
-const education = (await getCollection('education')).sort((a, b) =>
-  b.data.startDate.localeCompare(a.data.startDate)
+const education = (await getCollection("education")).sort((a, b) =>
+  b.data.startDate.localeCompare(a.data.startDate),
 );
 
-const projects = (await getCollection('projects'))
-  .filter((p) => p.data.featured)
-  .sort((a, b) => a.data.order - b.data.order);
+const allProjects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const featuredProjects = allProjects.filter((p) => p.data.featured);
+const otherProjects = allProjects.filter((p) => !p.data.featured);
+
+// "Python, FastAPI, AWS" → ["Python", "FastAPI", "AWS"]
+const splitStack = (value: string) =>
+  value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
 
 // Converte "2026-07" in "lug 2026"
 function formatMonth(value: string) {
-  if (!value) return '';
-  return new Date(`${value}-01T00:00:00Z`).toLocaleDateString('it-IT', {
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
+  if (!value) return "";
+  return new Date(`${value}-01T00:00:00Z`).toLocaleDateString("it-IT", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
   });
 }
 ---
 
 <Layout title="Vito Marco Rubino" description="AI Engineer & Data Scientist">
-  <section class="py-20">
-    <h1 class="text-4xl font-bold md:text-5xl">Ciao, sono Vito Marco Rubino.</h1>
-    <p class="mt-6 max-w-2xl text-lg text-slate-400">
-      Tra non molto troverai qui il mio portfolio completo. Intanto sto costruendo...
+  <section
+    class="flex min-h-[80vh] flex-col items-center justify-center text-center"
+  >
+    <h1 class="font-serif text-5xl leading-tight md:text-7xl">
+      Ciao, sono <span class="italic text-emerald-400">Vito Marco.</span>
+    </h1>
+
+    <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
+      AI Engineer e Data Scientist. Costruisco sistemi di AI che reggono in
+      produzione, dal prototipo di ricerca al prodotto in uso.
     </p>
 
-    <div class="mt-10 flex flex-wrap gap-4">
-      <a href={CV_URL} download class="rounded-lg bg-white px-5 py-3 font-semibold text-slate-900 hover:bg-slate-200">
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <a
+        href="/#progetti"
+        class="rounded-full bg-emerald-500 px-7 py-3 font-semibold text-slate-950 transition hover:bg-emerald-400"
+      >
+        Vedi i progetti
+      </a>
+      <a
+        href={CV_URL}
+        download
+        class="rounded-full border border-slate-600 px-7 py-3 font-semibold transition hover:bg-slate-800"
+      >
         Scarica il CV
       </a>
-      <a href={`mailto:${EMAIL}`} class="rounded-lg border border-slate-600 px-5 py-3 font-semibold hover:bg-slate-800">
-        Scrivimi
-      </a>
-      <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-600 px-5 py-3 font-semibold hover:bg-slate-800">
-        LinkedIn
-      </a>
     </div>
+
+    <a
+      href="#chi-sono"
+      aria-label="Scorri verso Chi sono"
+      class="mt-20 animate-bounce text-2xl text-slate-500 hover:text-slate-300 motion-reduce:animate-none"
+    >
+      ↓
+    </a>
+  </section>
+
+  <section id="chi-sono" class="py-24">
+    <p class="text-xs font-medium uppercase tracking-[0.3em] text-slate-500">
+      Chi sono
+    </p>
+
+    <h2 class="mt-4 font-serif text-4xl leading-tight md:text-5xl">
+      Dai dati ai sistemi, <span class="italic text-emerald-400"
+        >dalla ricerca alla produzione.</span
+      >
+    </h2>
+
+    <div
+      class="mt-8 max-w-2xl space-y-5 text-lg leading-relaxed text-slate-300"
+    >
+      <p>
+        Sono un AI Engineer e Data Scientist. Ho una laurea magistrale in Data
+        Science all'Università di Bari, con 110/110 e lode, e mi piace lavorare
+        dove la ricerca incontra il prodotto.
+      </p>
+      <p>
+        Oggi lavoro in Engineering, dove ho costruito una pipeline RAG che serve
+        oltre 17.000 utenti. Prima ho fatto ricerca: il mio modello per la
+        diagnosi precoce del Parkinson dalla voce ha raggiunto il 96,6% di
+        accuratezza, è stato pubblicato su Springer Nature ed è stato premiato
+        come miglior tesi.
+      </p>
+      <p>
+        Accanto al lavoro faccio mentoring: nei workshop "Girls Code It Better"
+        ho seguito 80 studentesse in 110 ore.
+      </p>
+    </div>
+
+    <dl
+      class="mt-14 grid grid-cols-1 gap-8 border-t border-slate-800 pt-10 sm:grid-cols-3"
+    >
+      <div>
+        <dt class="text-sm text-slate-500">Accuratezza nella ricerca</dt>
+        <dd class="mt-1 font-serif text-4xl text-white">96,6%</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-500">Utenti serviti con la RAG</dt>
+        <dd class="mt-1 font-serif text-4xl text-white">17.000+</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-500">Laurea magistrale</dt>
+        <dd class="mt-1 font-serif text-4xl text-white">110/110 e lode</dd>
+      </div>
+    </dl>
   </section>
 
   <section id="esperienza" class="py-16">
     <h2 class="mb-12 text-3xl font-bold">Esperienza</h2>
 
     <ol class="relative border-l border-slate-700 pl-10">
-      {experience.map((item, index) => {
-        const isCurrent = !item.data.endDate;
-        const end = isCurrent ? 'Presente' : formatMonth(item.data.endDate!);
-        return (
-          <li class="relative mb-12">
-            <span
-              class={`absolute -left-10 top-2 h-3.5 w-3.5 rounded-full border-2 border-slate-950 ${
-                index === 0 && isCurrent ? 'bg-emerald-400' : 'bg-slate-500'
-              }`}
-            ></span>
-            <p class="text-sm text-slate-500">
-              {formatMonth(item.data.startDate)} – {end}
-            </p>
-            <h3 class="mt-1 text-xl font-semibold">{item.data.role}</h3>
-            <p class="text-slate-400">
-              {item.data.company} · {item.data.location}
-            </p>
-            <div
-  class="mt-3 max-w-2xl text-slate-300 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_p]:mb-2 [&_strong]:font-semibold [&_strong]:text-white [&_em]:italic"
-  set:html={marked.parse(item.data.descriptionIt ?? '', { async: false })}
-/>
-          </li>
-        );
-      })}
+      {
+        experience.map((item, index) => {
+          const isCurrent = !item.data.endDate;
+          const end = isCurrent ? "Presente" : formatMonth(item.data.endDate!);
+          return (
+            <li class="relative mb-12">
+              <span
+                class={`absolute -left-10 top-2 h-3.5 w-3.5 rounded-full border-2 border-slate-950 ${
+                  index === 0 && isCurrent ? "bg-emerald-400" : "bg-slate-500"
+                }`}
+              />
+              <p class="text-sm text-slate-500">
+                {formatMonth(item.data.startDate)} – {end}
+              </p>
+              <h3 class="mt-1 text-xl font-semibold">{item.data.role}</h3>
+              <p class="text-slate-400">
+                {item.data.company} · {item.data.location}
+              </p>
+              <div
+                class="mt-3 max-w-2xl text-slate-300 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_p]:mb-2 [&_strong]:font-semibold [&_strong]:text-white [&_em]:italic"
+                set:html={marked.parse(item.data.descriptionIt ?? "", {
+                  async: false,
+                })}
+              />
+            </li>
+          );
+        })
+      }
     </ol>
   </section>
 
   <section id="formazione" class="py-16">
-  <h2 class="mb-12 text-3xl font-bold">Formazione</h2>
+    <h2 class="mb-12 text-3xl font-bold">Formazione</h2>
 
-  <ol class="space-y-6">
-    {education.map((item) => (
-      <li class="rounded-lg border border-slate-800 p-6">
-        <p class="text-sm text-slate-500">
-          {formatMonth(item.data.startDate)} – {formatMonth(item.data.endDate)}
-        </p>
-        <h3 class="mt-1 text-xl font-semibold">{item.data.degree}</h3>
-        <p class="text-slate-400">
-          {item.data.institution} · {item.data.location}
-        </p>
-        <p class="mt-3 text-slate-300">
-          Voto: <span class="font-semibold text-white">{item.data.grade}</span>
-        </p>
-        {item.data.thesis && (
-          <p class="mt-2 text-slate-300">
-            <span class="text-slate-500">Tesi:</span> <em>{item.data.thesis}</em>
-          </p>
-        )}
-      </li>
-    ))}
-  </ol>
-</section>
+    <ol class="space-y-6">
+      {
+        education.map((item) => (
+          <li class="rounded-lg border border-slate-800 p-6">
+            <p class="text-sm text-slate-500">
+              {formatMonth(item.data.startDate)} –{" "}
+              {formatMonth(item.data.endDate)}
+            </p>
+            <h3 class="mt-1 text-xl font-semibold">{item.data.degree}</h3>
+            <p class="text-slate-400">
+              {item.data.institution} · {item.data.location}
+            </p>
+            <p class="mt-3 text-slate-300">
+              Voto:{" "}
+              <span class="font-semibold text-white">{item.data.grade}</span>
+            </p>
+            {item.data.thesis && (
+              <p class="mt-2 text-slate-300">
+                <span class="text-slate-500">Tesi:</span>{" "}
+                <em>{item.data.thesis}</em>
+              </p>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
 
-<section id="progetti" class="py-16">
-  <h2 class="mb-12 text-3xl font-bold">Progetti</h2>
+  <section id="progetti" class="py-16">
+    <h2 class="mb-12 text-3xl font-bold">Progetti</h2>
 
-  <div class="grid gap-6 md:grid-cols-2">
-    {projects.map((item) => (
-      <article class="flex flex-col rounded-lg border border-slate-800 p-6">
-        <p class="text-sm text-slate-500">{item.data.period}</p>
-        <p class="mt-2 text-3xl font-bold text-emerald-400">{item.data.metric}</p>
-        <h3 class="mt-3 text-xl font-semibold">{item.data.title}</h3>
-        <div
-          class="mt-3 flex-1 text-slate-300 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_p]:mb-2 [&_strong]:font-semibold [&_strong]:text-white [&_em]:italic"
-          set:html={marked.parse(item.data.summaryIt ?? '', { async: false })}
-        ></div>
-        <p class="mt-4 text-sm text-slate-500">{item.data.stack}</p>
-        <div class="mt-4 flex gap-4 text-sm">
-          {item.data.repo && (
-            <a href={item.data.repo} target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Codice</a>
+    <!-- Progetti in evidenza -->
+    {
+      featuredProjects.map((item) => (
+        <article
+          class={`mb-10 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 ${item.data.image ? "md:grid md:grid-cols-2" : ""}`}
+        >
+          {item.data.image && (
+            <div class="relative min-h-64 overflow-hidden bg-slate-900">
+              <img
+                src={item.data.image}
+                alt={item.data.title}
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </div>
           )}
-          {item.data.paper && (
-            <a href={item.data.paper} target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Paper</a>
-          )}
+
+          <div class="flex flex-col p-8">
+            <p class="text-xs uppercase tracking-widest text-slate-500">
+              {item.data.period}
+            </p>
+            <h3 class="mt-2 text-2xl font-semibold">{item.data.title}</h3>
+            <p class="mt-3 text-3xl font-bold text-emerald-400">
+              {item.data.metric}
+            </p>
+
+            <div
+              class="mt-4 text-slate-300 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_p]:mb-2 [&_strong]:font-semibold [&_strong]:text-white [&_em]:italic"
+              set:html={marked.parse(item.data.summaryIt ?? "", {
+                async: false,
+              })}
+            />
+
+            <div class="mt-6 flex flex-wrap gap-2">
+              {splitStack(item.data.stack).map((tag) => (
+                <span class="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-400">
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div class="mt-6 flex flex-wrap gap-5 text-sm">
+              {item.data.live && (
+                <a
+                  href={item.data.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline hover:text-white"
+                >
+                  Demo
+                </a>
+              )}
+              {item.data.repo && (
+                <a
+                  href={item.data.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline hover:text-white"
+                >
+                  Codice
+                </a>
+              )}
+              {item.data.paper && (
+                <a
+                  href={item.data.paper}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline hover:text-white"
+                >
+                  Paper
+                </a>
+              )}
+            </div>
+          </div>
+        </article>
+      ))
+    }
+
+    <!-- Altri progetti, in scorrimento orizzontale -->
+    {
+      otherProjects.length > 0 && (
+        <div class="relative mt-16" data-carousel-wrapper>
+          <h3 class="mb-6 text-xl font-semibold">Altri progetti</h3>
+
+          <div
+            data-carousel
+            class="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {otherProjects.map((item) => (
+              <article class="flex w-72 shrink-0 snap-start flex-col rounded-xl border border-slate-800 bg-slate-900/50 p-6 md:w-80">
+                <p class="text-xs uppercase tracking-widest text-slate-500">
+                  {item.data.period}
+                </p>
+                <h4 class="mt-2 text-lg font-semibold">{item.data.title}</h4>
+                <p class="mt-2 text-2xl font-bold text-emerald-400">
+                  {item.data.metric}
+                </p>
+
+                <div
+                  class="mt-3 line-clamp-4 text-sm text-slate-400 [&_p]:mb-0 [&_strong]:text-slate-200"
+                  set:html={marked.parse(item.data.summaryIt ?? "", {
+                    async: false,
+                  })}
+                />
+
+                <div class="mt-auto pt-6">
+                  <p class="text-xs text-slate-500">
+                    {splitStack(item.data.stack).join(" · ")}
+                  </p>
+                  <div class="mt-4 flex gap-4 text-sm">
+                    {item.data.live && (
+                      <a
+                        href={item.data.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline hover:text-white"
+                      >
+                        Demo
+                      </a>
+                    )}
+                    {item.data.repo && (
+                      <a
+                        href={item.data.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline hover:text-white"
+                      >
+                        Codice
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div class="mt-4 flex justify-end gap-3">
+            <button
+              type="button"
+              data-prev
+              aria-label="Progetto precedente"
+              class="rounded-full border border-slate-700 px-4 py-2 hover:bg-slate-800"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              data-next
+              aria-label="Progetto successivo"
+              class="rounded-full border border-slate-700 px-4 py-2 hover:bg-slate-800"
+            >
+              →
+            </button>
+          </div>
         </div>
-      </article>
-    ))}
-  </div>
-</section>
+      )
+    }
+  </section>
+  <script>
+    document
+      .querySelectorAll<HTMLElement>("[data-carousel-wrapper]")
+      .forEach((wrapper) => {
+        const track = wrapper.querySelector<HTMLElement>("[data-carousel]");
+        const prev = wrapper.querySelector<HTMLButtonElement>("[data-prev]");
+        const next = wrapper.querySelector<HTMLButtonElement>("[data-next]");
+        if (!track || !prev || !next) return;
+
+        const gap = 24;
+        const scrollByCard = (direction: 1 | -1) => {
+          const card = track.firstElementChild as HTMLElement | null;
+          const distance = (card?.offsetWidth ?? 300) + gap;
+          track.scrollBy({ left: direction * distance, behavior: "smooth" });
+        };
+
+        prev.addEventListener("click", () => scrollByCard(-1));
+        next.addEventListener("click", () => scrollByCard(1));
+      });
+  </script>
 </Layout>

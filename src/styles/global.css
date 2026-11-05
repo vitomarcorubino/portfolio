@@ -1,2 +1,5 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@theme {
+  --font-serif: 'Fraunces', ui-serif, Georgia, serif;
+}

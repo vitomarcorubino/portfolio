@@ -50,6 +50,8 @@ const projects = defineCollection({
     paper: z.string().optional(),
     featured: z.boolean().default(false),
     order: z.number().default(0),
+    image: z.string().optional(),
+    live: z.string().optional(),
   }),
 });
 
