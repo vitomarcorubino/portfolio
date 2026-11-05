@@ -23,5 +23,19 @@ export default config({
         content: fields.mdx({ label: 'Contenuto' }),
       },
     }),
+    experience: collection({
+      label: 'Esperienza',
+      slugField: 'role',
+      path: 'src/content/experience/*',
+      schema: {
+        role: fields.slug({ name: { label: 'Ruolo' } }),
+        company: fields.text({ label: 'Azienda' }),
+        location: fields.text({ label: 'Luogo' }),
+        startDate: fields.text({ label: 'Data inizio (es. 2026-07)' }),
+        endDate: fields.text({ label: 'Data fine (vuoto se in corso)' }),
+        descriptionIt: fields.text({ label: 'Descrizione (IT)', multiline: true }),
+        descriptionEn: fields.text({ label: 'Descrizione (EN)', multiline: true }),
+      },
+    }),
   },
 });

@@ -1,5 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const CV_URL = '/cv/RUBINO_VITO_MARCO_CV_en.pdf';
+const LINKEDIN_URL = 'https://www.linkedin.com/in/vitomarcorubino';
+const EMAIL = 'rubino.vitomarcorubino@gmail.com';
+
+const experience = (await getCollection('experience')).sort((a, b) =>
+  (b.data.startDate ?? '').localeCompare(a.data.startDate ?? '')
+);
 ---
 
 <Layout title="Vito Marco Rubino" description="AI Engineer & Data Scientist">
@@ -8,5 +17,32 @@ import Layout from '../layouts/Layout.astro';
     <p class="mt-6 max-w-2xl text-lg text-slate-400">
       Tra non molto qui comparirà il mio portfolio.
     </p>
+
+    <div class="mt-10 flex flex-wrap gap-4">
+      <a href={CV_URL} download class="rounded-lg bg-white px-5 py-3 font-semibold text-slate-900 hover:bg-slate-200">
+        Scarica il CV
+      </a>
+      <a href={`mailto:${EMAIL}`} class="rounded-lg border border-slate-600 px-5 py-3 font-semibold hover:bg-slate-800">
+        Scrivimi
+      </a>
+      <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-600 px-5 py-3 font-semibold hover:bg-slate-800">
+        LinkedIn
+      </a>
+    </div>
   </section>
+
+  <section id="esperienza" class="py-16">
+  <h2 class="mb-10 text-3xl font-bold">Esperienza</h2>
+  <ol class="space-y-10 border-l border-slate-800 pl-6">
+    {experience.map((item) => (
+      <li>
+        <h3 class="text-xl font-semibold">{item.data.role}</h3>
+        <p class="text-slate-400">
+          {item.data.company} · {item.data.location} · {item.data.startDate} – {item.data.endDate ?? 'Presente'}
+        </p>
+        <p class="mt-3 text-slate-300">{item.data.descriptionIt}</p>
+      </li>
+    ))}
+  </ol>
+</section>
 </Layout>
