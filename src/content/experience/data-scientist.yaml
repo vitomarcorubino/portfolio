@@ -1,0 +1,25 @@
+role: Data Scientist
+company: Engineering Ingegneria Informatica S.p.A.
+location: Roma, Italia · Ibrido
+startDate: 2026-07
+descriptionIt: >-
+  - Implementato un assistente AI agentico e pipeline RAG per ricerca
+  intra/inter-documentale e supporto alla compilazione di form su più di **7.000
+  chunk vettoriali**, utilizzando FastAPI, PGVector e AWS (Kubernetes, S3) per
+  un bacino di **oltre 17.000 utenti**.
+
+  - Ridotto i tempi di traduzione documentale **da 15 minuti a 0,5 secondi**
+  integrando un modello per CPU.
+
+  - Sviluppato Smart Agents per il rilevamento di anomalie, la correlazione
+  multi-sorgente e behaviour prediction.
+descriptionEn: >-
+  - Built an agentic AI assistant and RAG pipeline for intra- and cross-document
+  search and form-filling automation across **7,000+ vector chunks**, using
+  FastAPI, PGVector, and AWS (Kubernetes, S3) to serve **17,000+ users**.
+
+  - Sped up document translation **from 15 minutes to 0.5 seconds** using a
+  CPU-optimized model.
+
+  - Developed AI Smart Agents for anomaly detection, multi-source correlation
+  and behavior prediction.
