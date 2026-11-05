@@ -4,10 +4,12 @@ import react from '@astrojs/react';
 import keystatic from '@keystatic/astro';
 import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [react(), keystatic(), mdx()],
+  adapter: vercel(),
   vite: {
     plugins: [tailwindcss()],
   },
