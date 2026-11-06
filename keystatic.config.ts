@@ -71,5 +71,69 @@ export default config({
         order: fields.integer({ label: 'Ordine in home (1 = primo)', defaultValue: 0 }),
       },
     }),
+
+    publications: collection({
+      label: 'Pubblicazioni',
+      slugField: 'title',
+      path: 'src/content/publications/*',
+      schema: {
+        title: fields.slug({ name: { label: 'Titolo' } }),
+        authors: fields.text({ label: 'Autori (come nel paper)', multiline: true }),
+        venue: fields.text({ label: 'Rivista o conferenza' }),
+        volume: fields.text({ label: 'Volume (es. vol. 15735, opzionale)' }),
+        pages: fields.text({ label: 'Pagine (es. 373–378)' }),
+        editors: fields.text({ label: 'Curatori (opzionale)', multiline: true }),
+        publisher: fields.text({ label: 'Editore (es. Springer Nature Switzerland, Cham)' }),
+        isbn: fields.text({ label: 'ISBN (opzionale)' }),
+        date: fields.text({ label: 'Data (AAAA-MM)' }),
+        url: fields.text({ label: 'Link al paper (opzionale)' }),
+      },
+    }),
+
+    prizes: collection({
+      label: 'Premi',
+      slugField: 'title',
+      path: 'src/content/prizes/*',
+      schema: {
+        title: fields.slug({ name: { label: 'Titolo' } }),
+        issuer: fields.text({ label: 'Ente che ha assegnato il premio' }),
+        date: fields.text({ label: 'Data (AAAA-MM)' }),
+        description: fields.text({ label: 'Descrizione (opzionale)', multiline: true }),
+        url: fields.text({ label: 'Link (opzionale)' }),
+      },
+    }),
+
+    certifications: collection({
+      label: 'Certificazioni',
+      slugField: 'title',
+      path: 'src/content/certifications/*',
+      schema: {
+        title: fields.slug({ name: { label: 'Titolo' } }),
+        issuer: fields.text({ label: 'Ente certificatore' }),
+        date: fields.text({ label: 'Data (AAAA-MM)' }),
+        credentialId: fields.text({ label: 'ID credenziale (opzionale)' }),
+        url: fields.text({ label: 'Link alla credenziale (opzionale)' }),
+      },
+    }),
+
+    references: collection({
+      label: 'Referenze',
+      slugField: 'name',
+      path: 'src/content/references/*',
+      schema: {
+        name: fields.slug({ name: { label: 'Nome' } }),
+        role: fields.text({ label: 'Ruolo o titolo (come su LinkedIn)' }),
+        relationship: fields.text({ label: 'Rapporto (es. collega di università)' }),
+        date: fields.text({ label: 'Data (AAAA-MM)' }),
+        text: fields.text({ label: 'Testo della referenza (integrale)', multiline: true }),
+        linkedinUrl: fields.text({ label: 'Profilo LinkedIn (opzionale)' }),
+        avatar: fields.image({
+          label: 'Foto profilo (quadrata, opzionale)',
+          directory: 'public/images/references',
+          publicPath: '/images/references/',
+        }),
+        order: fields.integer({ label: 'Ordine (1 = primo)', defaultValue: 0 }),
+      },
+    }),
   },
 });

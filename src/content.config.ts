@@ -55,4 +55,65 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { posts, experience, education, projects };
+const publications = defineCollection({
+  loader: glob({ pattern: '**/*.{yaml,json}', base: './src/content/publications' }),
+  schema: z.object({
+    title: z.string(),
+    authors: z.string().default(''),
+    venue: z.string().default(''),
+    volume: z.string().default(''),
+    pages: z.string().default(''),
+    editors: z.string().default(''),
+    publisher: z.string().default(''),
+    isbn: z.string().default(''),
+    date: z.string(),
+    url: z.string().default(''),
+  }),
+});
+
+const prizes = defineCollection({
+  loader: glob({ pattern: '**/*.{yaml,json}', base: './src/content/prizes' }),
+  schema: z.object({
+    title: z.string(),
+    issuer: z.string().default(''),
+    date: z.string(),
+    description: z.string().default(''),
+    url: z.string().default(''),
+  }),
+});
+
+const certifications = defineCollection({
+  loader: glob({ pattern: '**/*.{yaml,json}', base: './src/content/certifications' }),
+  schema: z.object({
+    title: z.string(),
+    issuer: z.string(),
+    date: z.string(),
+    credentialId: z.string().default(''),
+    url: z.string().default(''),
+  }),
+});
+
+const references = defineCollection({
+  loader: glob({ pattern: '**/*.{yaml,json}', base: './src/content/references' }),
+  schema: z.object({
+    name: z.string(),
+    role: z.string().default(''),
+    relationship: z.string().default(''),
+    date: z.string(),
+    text: z.string(),
+    linkedinUrl: z.string().default(''),
+    order: z.number().default(0),
+    avatar: z.string().optional(),
+  }),
+});
+
+export const collections = {
+  posts,
+  experience,
+  education,
+  projects,
+  publications,
+  prizes,
+  certifications,
+  references,
+};

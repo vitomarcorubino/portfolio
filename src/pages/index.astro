@@ -5,7 +5,8 @@ import { marked } from "marked";
 
 const CV_URL = "/cv/cv-vito-marco-rubino-en.pdf";
 const LINKEDIN_URL = "https://www.linkedin.com/in/vitomarcorubino";
-const EMAIL = "rubino.vitomarcorubino@gmail.com";
+const EMAIL = "rubino.vitomarco@gmail.com";
+const GITHUB_URL = "https://github.com/vitomarcorubino";
 
 const experience = (await getCollection("experience")).sort((a, b) =>
   (b.data.startDate ?? "").localeCompare(a.data.startDate ?? ""),
@@ -20,6 +21,37 @@ const allProjects = (await getCollection("projects")).sort(
 );
 const featuredProjects = allProjects.filter((p) => p.data.featured);
 const otherProjects = allProjects.filter((p) => !p.data.featured);
+
+const publications = (await getCollection("publications")).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date),
+);
+const prizes = (await getCollection("prizes")).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date),
+);
+const certifications = (await getCollection("certifications")).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date),
+);
+
+const references = (await getCollection("references")).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date),
+);
+
+
+// "Giovanni Priore" → "GP"
+const initials = (name: string) =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+// Accetta sia un percorso completo sia solo il nome del file caricato
+const avatarSrc = (value?: string) => {
+  if (!value) return '';
+  if (value.startsWith('/') || value.startsWith('http')) return value;
+  return `/images/references/${value}`;
+};
 
 // "Python, FastAPI, AWS" → ["Python", "FastAPI", "AWS"]
 const splitStack = (value: string) =>
@@ -354,6 +386,274 @@ function formatMonth(value: string) {
       )
     }
   </section>
+
+  {
+    publications.length > 0 && (
+      <section id="pubblicazioni" class="py-24">
+        <p class="text-xs font-medium uppercase tracking-[0.3em] text-slate-500">
+          Pubblicazioni
+        </p>
+        <h2 class="mt-4 font-serif text-4xl leading-tight md:text-5xl">
+          Ricerca <span class="italic text-emerald-400">pubblicata.</span>
+        </h2>
+
+        <ul class="mt-14 space-y-12">
+          {publications.map((item) => (
+            <li class="border-l-2 border-emerald-500/60 pl-6">
+              <p class="text-sm text-slate-500">
+                {formatMonth(item.data.date)}
+              </p>
+              <h3 class="mt-1 text-xl font-semibold">{item.data.title}</h3>
+
+              {item.data.authors && (
+                <p class="mt-2 text-slate-400">{item.data.authors}</p>
+              )}
+
+              <p class="mt-2 text-sm text-slate-300">
+                <em>{item.data.venue}</em>
+                {item.data.volume && `, ${item.data.volume}`}
+                {item.data.pages && `, pp. ${item.data.pages}`}
+              </p>
+
+              {item.data.editors && (
+                <p class="mt-1 text-sm text-slate-500">
+                  Eds.: {item.data.editors}
+                </p>
+              )}
+
+              {(item.data.publisher || item.data.isbn) && (
+                <p class="mt-1 text-xs text-slate-500">
+                  {item.data.publisher}
+                  {item.data.isbn && ` · ISBN ${item.data.isbn}`}
+                </p>
+              )}
+
+              {item.data.url && (
+                <a
+                  href={item.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-3 inline-block text-sm underline hover:text-white"
+                >
+                  Leggi il paper
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    prizes.length > 0 && (
+      <section id="premi" class="py-24">
+        <p class="text-xs font-medium uppercase tracking-[0.3em] text-slate-500">
+          Premi
+        </p>
+        <h2 class="mt-4 font-serif text-4xl leading-tight md:text-5xl">
+          Riconoscimenti <span class="italic text-emerald-400">ricevuti.</span>
+        </h2>
+
+        <div class="mt-14 grid gap-6 md:grid-cols-2">
+          {prizes.map((item) => (
+            <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
+              <p class="text-xs uppercase tracking-widest text-slate-500">
+                {formatMonth(item.data.date)}
+              </p>
+              <h3 class="mt-3 font-serif text-2xl">{item.data.title}</h3>
+              {item.data.issuer && (
+                <p class="mt-2 text-slate-400">{item.data.issuer}</p>
+              )}
+              {item.data.description && (
+                <p class="mt-4 text-slate-300">{item.data.description}</p>
+              )}
+              {item.data.url && (
+                <a
+                  href={item.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-5 inline-block text-sm underline hover:text-white"
+                >
+                  Dettagli
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    certifications.length > 0 && (
+      <section id="certificazioni" class="py-24">
+        <p class="text-xs font-medium uppercase tracking-[0.3em] text-slate-500">
+          Certificazioni
+        </p>
+        <h2 class="mt-4 font-serif text-4xl leading-tight md:text-5xl">
+          Corsi e <span class="italic text-emerald-400">certificati.</span>
+        </h2>
+
+        <ul class="mt-14 grid gap-4 sm:grid-cols-2">
+          {certifications.map((item) => (
+            <li class="rounded-lg border border-slate-800 p-5">
+              <h3 class="font-semibold">{item.data.title}</h3>
+              <p class="mt-1 text-sm text-slate-500">
+                {item.data.issuer} · {formatMonth(item.data.date)}
+              </p>
+              {item.data.credentialId && (
+                <p class="mt-2 text-xs text-slate-600">
+                  ID: {item.data.credentialId}
+                </p>
+              )}
+              {item.data.url && (
+                <a
+                  href={item.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-2 inline-block text-xs underline hover:text-white"
+                >
+                  Verifica
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {references.length > 0 && (
+  <section id="referenze" class="py-24">
+    <p class="text-xs font-medium uppercase tracking-[0.3em] text-slate-500">Referenze</p>
+    <h2 class="mt-4 font-serif text-4xl leading-tight md:text-5xl">
+      Cosa dicono <span class="italic text-emerald-400">di me.</span>
+    </h2>
+    <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
+      Messaggi dei colleghi con cui ho studiato e lavorato, come li ho ricevuti su LinkedIn.
+    </p>
+
+    <div class="mt-14 space-y-10">
+      {references.map((item) => {
+        const src = avatarSrc(item.data.avatar);
+        return (
+          <article class="flex gap-4 md:gap-6">
+            <div class="shrink-0 pt-1">
+              {src ? (
+                <img
+                  src={src}
+                  alt={item.data.name}
+                  class="h-12 w-12 rounded-full object-cover ring-2 ring-slate-800"
+                  loading="lazy"
+                />
+              ) : (
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-800 text-sm font-semibold text-slate-300">
+                  {initials(item.data.name)}
+                </span>
+              )}
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <p class="font-semibold">{item.data.name}</p>
+                <p class="text-xs text-slate-500">{formatMonth(item.data.date)}</p>
+              </div>
+              {item.data.role && (
+                <p class="text-sm text-slate-500">{item.data.role}</p>
+              )}
+
+              <div class="relative mt-3 max-w-2xl rounded-2xl rounded-tl-sm bg-slate-800/70 px-6 py-5 leading-relaxed whitespace-pre-line text-slate-200 shadow-sm">
+                {item.data.text}
+              </div>
+
+              <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
+                {item.data.relationship && <span>{item.data.relationship}</span>}
+                {item.data.linkedinUrl && (
+                  <a
+                    href={item.data.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="underline hover:text-slate-300"
+                  >
+                    Vedi su LinkedIn
+                  </a>
+                )}
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+  <section id="contatti" class="py-24">
+    <p class="text-xs font-medium uppercase tracking-[0.3em] text-slate-500">
+      Contatti
+    </p>
+
+    <h2 class="mt-4 font-serif text-4xl leading-tight md:text-5xl">
+      Parliamone <span class="italic text-emerald-400">insieme.</span>
+    </h2>
+
+    <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
+      Sono aperto a ruoli come AI Engineer, Data Scientist, Machine Learning
+      Engineer e collaborazioni di ricerca. Se hai un'opportunità o vuoi
+      semplicemente confrontarti, scrivimi.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-4">
+      <a
+        href={`mailto:${EMAIL}`}
+        class="rounded-full bg-emerald-500 px-7 py-3 font-semibold text-slate-950 transition hover:bg-emerald-400"
+      >
+        Scrivimi
+      </a>
+      <a
+        href={CV_URL}
+        download
+        class="rounded-full border border-slate-600 px-7 py-3 font-semibold transition hover:bg-slate-800"
+      >
+        Scarica il CV
+      </a>
+    </div>
+
+    <ul
+      class="mt-14 grid gap-4 border-t border-slate-800 pt-10 text-slate-300 sm:grid-cols-3"
+    >
+      <li>
+        <p class="text-sm text-slate-500">Email</p>
+        <a
+          href={`mailto:${EMAIL}`}
+          class="mt-1 block break-all hover:text-white">{EMAIL}</a
+        >
+      </li>
+      <li>
+        <p class="text-sm text-slate-500">LinkedIn</p>
+        <a
+          href={LINKEDIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-1 block hover:text-white"
+        >
+          vitomarcorubino
+        </a>
+      </li>
+      <li>
+        <p class="text-sm text-slate-500">GitHub</p>
+        <a
+          href={GITHUB_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-1 block hover:text-white"
+        >
+          vitomarcorubino
+        </a>
+      </li>
+    </ul>
+  </section>
+
   <script>
     document
       .querySelectorAll<HTMLElement>("[data-carousel-wrapper]")
